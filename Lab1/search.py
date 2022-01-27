@@ -87,12 +87,65 @@ def depthFirstSearch(problem: SearchProblem):
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    starting_node = problem.getStartState()
+    if problem.isGoalState(starting_node):
+        return []
+
+    stack = util.Stack()
+    nodes_visited = []
+    actions = []
+    cost_so_far = 0
+    pushable_item = (starting_node, actions, cost_so_far)
+    stack.push(pushable_item)
+
+    while not stack.isEmpty():
+        current_node, actions, cost_for_current_node = stack.pop()
+
+        if current_node not in nodes_visited:
+            nodes_visited.append(current_node)
+
+            if problem.isGoalState(current_node):
+                print("*******\n","cost\t",cost_for_current_node,"\n********")
+                return actions
+
+            for next_node, next_action, next_cost in problem.getSuccessors(current_node):
+                cost_for_next_node = cost_for_current_node + next_cost
+                total_actions = actions + [next_action]
+                pushable_item = (next_node, total_actions, cost_for_next_node)
+                stack.push(pushable_item)
+    "*** YOUR CODE OVER ***"
+
 
 def breadthFirstSearch(problem: SearchProblem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    starting_node = problem.getStartState()
+    if problem.isGoalState(starting_node):
+        return []
+
+    queue = util.Queue()
+    nodes_visited = []
+    actions = []
+    cost_so_far = 0
+    pushable_item = (starting_node, actions, cost_so_far)
+    queue.push(pushable_item)
+
+    while not queue.isEmpty():
+        current_node, actions, cost_for_current_node = queue.pop()
+
+        if current_node not in nodes_visited:
+            nodes_visited.append(current_node)
+
+            if problem.isGoalState(current_node):
+                print("*******\n", "cost\t", cost_for_current_node, "\n********")
+                return actions
+
+            for next_node, next_action, next_cost in problem.getSuccessors(current_node):
+                cost_for_next_node = cost_for_current_node + next_cost
+                total_actions = actions + [next_action]
+                pushable_item = (next_node, total_actions, cost_for_next_node)
+                queue.push(pushable_item)
+    "*** YOUR CODE OVER ***"
 
 def uniformCostSearch(problem: SearchProblem):
     """Search the node of least total cost first."""
