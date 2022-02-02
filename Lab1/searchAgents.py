@@ -488,8 +488,8 @@ def foodHeuristic(state: Tuple[Tuple, List[List]], problem: FoodSearchProblem):
     for food_item in food_list:
         distance_to_food.append(mazeDistance(position, food_item, problem.startingGameState))
     # idea behind max: given 2 states, one with larger max will require pacman to travel further, hence has higher cost.
-    total_food_distance = max(distance_to_food)
-    return total_food_distance
+    max_food_distance = max(distance_to_food)
+    return max_food_distance
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
