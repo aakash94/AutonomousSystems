@@ -29,8 +29,18 @@ def print_solution(solution):
 def compute_solution(sat_assignment, variables, size):
     solution = []
     # TODO: Map the SAT assignment back into a Sudoku solution
+    for i in sat_assignment:
+        if sat_assignment[i] is True:
+            if i%9 == 0:
+                solution.append(9)
+            else:
+                solution.append((i%9)) 
     return solution
 
+
+def grid(i, j, k):
+    # Function to return data in CNF format
+    return i * 81 + j * 9 + k + 1
 
 def generate_theory(board, verbose):
     """ Generate the propositional theory that corresponds to the given board. """
@@ -40,14 +50,50 @@ def generate_theory(board, verbose):
 
     # TODO
 
+    square_constraints=[]
+    # One number per square
+    for i, j in itertools.product(range(9), range(9)):
+        square_constraints.append([grid(i, j, k) for k in range(9)])
+        for k1, k2 in itertools.combinations(range(9), 2):
+            square_constraints.append([str(-grid(i,j,k1)),str(-grid(i,j,k2))])
+
+    row_constraints=[]
+    # One number in one row
+    for i in range(9):
+        for k in range(9):
+            row_numbers=[grid(i, j, k) for j in range(9)]
+            row_constraints.append([str(number) for number in row_numbers])
+            for j1, j2 in itertools.combinations(row_numbers, 2):
+                row_constraints.append([str(-j1),str(-j2)])
+
+    column_constraints=[]
+    # One number in one column
+    for j in range(9):
+        for k in range(9):
+            column_numbers=[grid(i, j, k) for i in range(9)]
+            column_constraints.append([str(number) for number in column_numbers])
+            for i1, i2 in itertools.combinations(column_numbers, 2):
+                column_constraints.append([str(-i1),str(-i2)])
+
+    block_constraints=[]
+    # One number in one block or 3x3 cell
+    for p, q in itertools.product(range(3), range(3)):
+        for k in range(9):
+            block_numbers=[grid(i, j, k) for i, j in itertools.product(range(p*3, p*3+3), range(q*3, q*3+3))]
+            block_constraints.append([str(number) for number in block_numbers])
+            for block_n1 in block_numbers:
+                for block_n2 in block_numbers[block_numbers.index(block_n1)+1:]:
+                    block_constraints.append([str(-block_n1), str(-block_n2)])
+
+    given_info = []
+    # Given information
     for i in range(len(board.data)):
-        if board.data[i] ==0:
-            
+        if not board.data[i] == 0:
+            v = 9*i + board.data[i]
+            given_info.append([str(v)])
 
-    for r in range(9):
-        for c in range(9):
-            for val in range(1,10):
-
+    clauses=square_constraints+row_constraints+column_constraints+block_constraints+given_info
+    variables = [i for i in range(1, 730)]
 
     return clauses, variables, size
 
@@ -55,7 +101,7 @@ def generate_theory(board, verbose):
 def count_number_solutions(board, verbose=False):
     count = 0
 
-    # TODO section c
+    # TODO
 
     print(f'Number of solutions: {count}')
 
