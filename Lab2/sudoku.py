@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import argparse
+from hashlib import new
 import itertools
 import math
 import sys
@@ -34,7 +35,7 @@ def compute_solution(sat_assignment, variables, size):
             if i%9 == 0:
                 solution.append(9)
             else:
-                solution.append((i%9)) 
+                solution.append((i%9))
     return solution
 
 
@@ -102,6 +103,21 @@ def count_number_solutions(board, verbose=False):
     count = 0
 
     # TODO
+
+    clauses, variables, size = generate_theory(board, verbose)
+    sat_assignment=solve_sat_problem(clauses, "theory_count.cnf", size, variables, verbose)
+    count+=1
+    solution=compute_solution(sat_assignment, [], board.size)
+    while True:
+        extra_info = [9*i + solution[i] for i in range(len(solution))]
+        extra_info2 = [[str(-info) for info in extra_info]]
+        clauses=clauses+extra_info2
+        sat_assignment=solve_sat_problem(clauses, "theory_count.cnf", size, variables, verbose)
+        if sat_assignment!=None:
+            count+=1
+            solution=compute_solution(sat_assignment, [], board.size)
+        else:
+            break
 
     print(f'Number of solutions: {count}')
 
