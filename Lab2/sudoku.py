@@ -40,13 +40,22 @@ def generate_theory(board, verbose):
 
     # TODO
 
+    for i in range(len(board.data)):
+        if board.data[i] ==0:
+            
+
+    for r in range(9):
+        for c in range(9):
+            for val in range(1,10):
+
+
     return clauses, variables, size
 
 
 def count_number_solutions(board, verbose=False):
     count = 0
 
-    # TODO
+    # TODO section c
 
     print(f'Number of solutions: {count}')
 
