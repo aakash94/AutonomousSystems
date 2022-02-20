@@ -26,9 +26,14 @@ def print_solution(solution):
     Board(solution).print()
 
 
-def compute_solution(sat_assignment, variables, size):
+def compute_solution(sat_assignment, size=9, variables= None):
     solution = []
-    # TODO: Map the SAT assignment back into a Sudoku solution
+    for i in sat_assignment:
+        if sat_assignment[i] is True:
+            if i % 9 == 0:
+                solution.append(9)
+            else:
+                solution.append((i % 9))
     return solution
 
 

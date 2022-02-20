@@ -1,5 +1,6 @@
 import subprocess
 import time
+import os
 
 
 def parse_minisat_output(filename):
@@ -22,11 +23,14 @@ def solve(cnf_filename, verbose):
     output = 'solver.output'
     cmd = ['minisat', cnf_filename, output]
 
+    log_file_path = os.path.join("res", "solver.log")
+    error_file_path = os.path.join("res", "solver.err")
+
     if verbose:
         retcode = subprocess.call(cmd)
     else:  # Redirect the output
-        with open('solver.log', 'w') as stdout:
-            with open('solver.err', 'w') as stderr:
+        with open(log_file_path, 'w') as stdout:
+            with open(error_file_path, 'w') as stderr:
                 retcode = subprocess.call(cmd, stdout=stdout, stderr=stderr)
 
     return parse_minisat_output(output)

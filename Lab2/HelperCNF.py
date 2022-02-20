@@ -91,7 +91,7 @@ if __name__ == '__main__':
     if result1 != "SAT":
         print("The given board is not solvable")
 
-    solution = compute_solution(sat_assignment, variables=[], size=N)
+    solution = compute_solution(sat_assignment, size=N)
     print_solution(solution)
     # result2 = solve(cnf_filename=DIMACS_Q2_FILE)
 
