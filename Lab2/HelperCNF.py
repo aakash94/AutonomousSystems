@@ -1,4 +1,5 @@
 from utils import solve
+from sudoku import find_one_solution, solve_sat_problem, print_solution, compute_solution
 
 EMPTY_SUDOKU = "................................................................................."
 DIMACS_Q1_FILE = "res/dimacs_q1.cnf"
@@ -56,15 +57,16 @@ def generate_q1(input_sudoku=EMPTY_SUDOKU):
             cnf_file.write(line)
             cnf_file.write("\n")
 
+
 def generate_q2(input_sudoku=EMPTY_SUDOKU):
     # TODO: Write Logic for this, and update DIMACS_Q2_FILE
     pass
+
 
 class HelperCNF():
 
     def __init__(self):
         print("DIMACS CNF SAT\n\n")
-
 
     def sat_encoder(self, input_sudoku=EMPTY_SUDOKU):
         '''
@@ -73,7 +75,7 @@ class HelperCNF():
         assert len(input_sudoku) == (N * N), "Wrong Sudoku Input"
         print("Input is :\n", input_sudoku)
         generate_q1(input_sudoku=input_sudoku)
-        generate_q2(input_sudoku=input_sudoku)
+        # generate_q2(input_sudoku=input_sudoku)
 
     def sat_decoder(self):
         print("Output is: \n")
@@ -85,7 +87,12 @@ if __name__ == '__main__':
     # sudoku_string  = sys.argv[1]
     sudoku_string = ".......1.4.........2...........5.4.7..8...3....1.9....3..4..2...5.1........8.6..."
     cls = cnf_handler.sat_encoder(input_sudoku=sudoku_string)
-    result1 = solve(cnf_filename=DIMACS_Q1_FILE)
-    result2 = solve(cnf_filename=DIMACS_Q2_FILE)
+    result1, sat_assignment = solve(cnf_filename=DIMACS_Q1_FILE, verbose=False)
+    if result1 != "SAT":
+        print("The given board is not solvable")
+
+    solution = compute_solution(sat_assignment, variables=[], size=N)
+    print_solution(solution)
+    # result2 = solve(cnf_filename=DIMACS_Q2_FILE)
 
     # TODO: Interpret and Print result1 and result2 beautifully.
