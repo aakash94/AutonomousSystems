@@ -62,12 +62,40 @@ def main(argv):
     args = parse_arguments(argv)
     with open(args.i, 'r') as file:
         board = SokobanGame(file.read().rstrip('\n'))
+    num_variables = max(board.h, board.w)
+    objects_line = '(:objects'
+    init_line = '(:init '
+    for var in range(num_variables):
+        objects_line += ' v'+str(var)+''
+        for var2 in range(num_variables):
+            if var+1==var2:
+                init_line += '(inc v'+str(var)+' v'+str(var2)+') '
+                init_line += '(dec v'+str(var2)+' v'+str(var)+') '
+                init_line += '\n'
+    init_line += '(at player v'+str(board.player[0])+' v'+str(board.player[1])+')'
+    init_line += '\n'
+    for box in board.boxes:
+        init_line += '(at box v'+str(box[0])+' v'+str(box[1])+') '
+        init_line += '\n'
+    for wall in board.walls:
+        init_line += '(at wall v'+str(wall[0])+' v'+str(wall[1])+') '
+        init_line += '\n'
+    goal_line = '(:goal (and '
+    for goal in board.goals:
+        goal_line += '(at box v'+str(goal[0])+' v'+str(goal[1])+') '
+        goal_line += '\n'
+    lines = ['(define (problem sokobanlevel)'+'\n'+'(:domain sokoban)', objects_line+')', init_line+')', goal_line+')))']
+    with open("instance.pddl", 'w') as instance:
+        for line in lines:
+            instance.write(line)
+            instance.write('\n')
 
     # TODO - Some of the things that you need to do:
-    #  1. (Previously) Have a domain.pddl file somewhere in disk that represents the Sokoban actions and predicates.
-    #  2. Generate an instance.pddl file from the given board, and save it to disk.
+    #  1. (Previously) Have a domain.pddl file somewhere in disk that represents the Sokoban actions and predicates. done
+    #  2. Generate an instance.pddl file from the given board, and save it to disk. done
     #  3. Invoke some classical planner to solve the generated instance.
-    #  3. Check the output and print the plan into the screen in some readable form.
+    #  4. Check the output and print the plan into the screen in some readable form.
+    
 
 
 if __name__ == "__main__":
