@@ -2,6 +2,7 @@
 
 import argparse
 import sys
+import os
 
 
 def parse_arguments(argv):
@@ -89,6 +90,17 @@ def main(argv):
         for line in lines:
             instance.write(line)
             instance.write('\n')
+
+    #domain_file = open('domain.pddl', 'r')
+    #instance_file = open('instance.pddl', 'r')
+    #result_file = os.popen('python3 ./downward/fast-downward.py domain.pddl instance.pddl --search "astar(lmcut())"')
+    result_file = os.popen('python3 ./downward/fast-downward.py --alias seq-sat-lama-2011 domain.pddl instance.pddl')
+    result = result_file.readlines()
+    actions = []
+    for line in result:
+        if ('push' in line) or ('move' in line) or ('teleport' in line): 
+            print(line)
+            actions.append(line)
 
     # TODO - Some of the things that you need to do:
     #  1. (Previously) Have a domain.pddl file somewhere in disk that represents the Sokoban actions and predicates. done
