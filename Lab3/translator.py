@@ -11,6 +11,10 @@ def find_files(filename):
 
 def translate():
     plans = find_files("myplan.txt")
+    if len(plans) ==0:
+        message = "NO SOLUTION FOUND IN 1 minute"
+        print(message)
+        return message
     plans = [plans[0]]
     for plan_file in plans:
         plan = open(plan_file, 'r')
