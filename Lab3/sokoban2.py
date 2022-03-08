@@ -106,7 +106,6 @@ def main(argv):
 
     #result_file = os.popen('python3 ' + downward_path + ' --overall-time-limit 60 --alias ' + optimal_command_solver + ' --plan-file myplan.txt domain2.pddl instance2.pddl')
     result_file = os.popen('python3 ' + downward_path + ' --overall-time-limit 60 --alias ' + satisfiable_command_solver + ' --plan-file myplan.txt domain2.pddl instance2.pddl')
-    #result_file = os.popen('python3 ./downward/fast-downward.py --overall-time-limit 60 --alias seq-sat-lama-2011 --plan-file myplan.txt domain2.pddl instance2.pddl')
     result = result_file.readlines()
     actions = []
     for line in result:
