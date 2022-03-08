@@ -1,17 +1,17 @@
 import os
 
-def find_files(filename, search_path):
+def find_files(filename):
    plan_files = []
 # Wlaking top-down from the root
-   for root, dir, files in os.walk(search_path):
+   for root, dir, files in os.walk(os.getcwd()):
       for name in files:
         if filename in name:
             plan_files.append(name)
    return plan_files
 
 def translate():
-    plans = find_files("myplan.txt","C:/Users/Aaron/Documents/MIIS/TRI 2/Autonomous System/GitHub Repo Labs/Lab3/")
-    plans = [plans[-1]]
+    plans = find_files("myplan.txt")
+    plans = [plans[0]]
     for plan_file in plans:
         plan = open(plan_file, 'r')
         actions = plan.readlines()

@@ -1,9 +1,15 @@
 #!/usr/bin/env python3
 
 import argparse
+from asyncio import run_coroutine_threadsafe
 import sys
 import os
+from translator import *
 
+# add path to your fast-downward.py file!
+downward_path = './downward/fast-downward.py'
+optimal_command_solver = 'seq-opt-bjolp'
+satisfiable_command_solver = 'seq-sat-lama-2011'
 
 def parse_arguments(argv):
     parser = argparse.ArgumentParser(description='Solve Sudoku problems.')
@@ -98,23 +104,20 @@ def main(argv):
             instance2.write(line)
             instance2.write('\n')
 
-    #domain_file = open('domain.pddl', 'r')
-    #instance2_file = open('instance2.pddl', 'r')
-    result_file = os.popen('python3 ./downward/fast-downward.py --alias seq-sat-lama-2011 --plan-file myplan.txt domain2.pddl instance2.pddl')
-    #result_file = os.popen('python3 ./downward/fast-downward.py --overall-time-limit 150 --alias seq-sat-lama-2011 --plan-file myplan.txt domain2.pddl instance2.pddl')
-    #result_file = os.popen('python3 ./downward/fast-downward.py --overall-time-limit 60 --alias seq-opt-lmcut --plan-file myplan.txt domain2.pddl instance2.pddl')
+    result_file = os.popen('python3 ' + downward_path + ' --overall-time-limit 60 --alias ' + optimal_command_solver + ' --plan-file myplan.txt domain2.pddl instance2.pddl')
+    #result_file = os.popen('python3 ' + downward_path + ' --overall-time-limit 60 --alias ' + satisfiable_command_solver + ' --plan-file myplan.txt domain2.pddl instance2.pddl')
+    #result_file = os.popen('python3 ./downward/fast-downward.py --overall-time-limit 60 --alias seq-sat-lama-2011 --plan-file myplan.txt domain2.pddl instance2.pddl')
     result = result_file.readlines()
     actions = []
     for line in result:
-        #print(line)
         actions.append(line)
+    translate()
 
     # TODO - Some of the things that you need to do:
     #  1. (Previously) Have a domain.pddl file somewhere in disk that represents the Sokoban actions and predicates. done
     #actions  2. Generate an instance2.pddl file from the given board, and save it to disk. done
     #  3. Invoke some classical planner to solve the generated instance2.
     #  4. Check the output and print the plan into the screen in some readable form.
-    
 
 
 if __name__ == "__main__":
