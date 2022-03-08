@@ -63,27 +63,40 @@ def main(argv):
     args = parse_arguments(argv)
     with open(args.i, 'r') as file:
         board = SokobanGame(file.read().rstrip('\n'))
-    num_variables = max(board.h, board.w)
-    objects_line = '(:objects'
+    objects_line = '(:objects '
     init_line = '(:init '
-    for var in range(num_variables):
-        objects_line += ' v'+str(var)+''
-        for var2 in range(num_variables):
-            if var+1==var2:
-                init_line += '(inc v'+str(var)+' v'+str(var2)+') '
-                init_line += '(dec v'+str(var2)+' v'+str(var)+') '
-                init_line += '\n'
-    init_line += '(at player v'+str(board.player[0])+' v'+str(board.player[1])+')'
+    for var in range(board.h):
+        #objects_line += ' v'+str(var)
+        for var2 in range(board.w):
+            objects_line += 'v'+str(var)+'-v'+str(var2)+' '
+            init_line += '(adjacent v'+str(var)+'-v'+str(var2)+' v'+str(var+1)+'-v'+str(var2)+') '
+            init_line += '(adjacent v'+str(var)+'-v'+str(var2)+' v'+str(var-1)+'-v'+str(var2)+') '
+            init_line += '(adjacent v'+str(var)+'-v'+str(var2)+' v'+str(var)+'-v'+str(var2+1)+') '
+            init_line += '(adjacent v'+str(var)+'-v'+str(var2)+' v'+str(var)+'-v'+str(var2-1)+') '
+            init_line += '(adjacent_2 v'+str(var)+'-v'+str(var2)+' v'+str(var+2)+'-v'+str(var2)+') '
+            init_line += '(adjacent_2 v'+str(var)+'-v'+str(var2)+' v'+str(var-2)+'-v'+str(var2)+') '
+            init_line += '(adjacent_2 v'+str(var)+'-v'+str(var2)+' v'+str(var)+'-v'+str(var2+2)+') '
+            init_line += '(adjacent_2 v'+str(var)+'-v'+str(var2)+' v'+str(var)+'-v'+str(var2-2)+') '
+            init_line += '\n'
+        objects_line += '\n'
+            # if var+1==var2:
+            #     init_line += '(inc v'+str(var)+' v'+str(var2)+') '
+            #     init_line += '(dec v'+str(var2)+' v'+str(var)+') '
+            #     init_line += '\n'
+    #objects_line += ' t_yes t_no'
+    init_line += '(use_teleport)'
+    init_line += '\n'
+    init_line += '(at player v'+str(board.player[0])+'-v'+str(board.player[1])+')'
     init_line += '\n'
     for box in board.boxes:
-        init_line += '(at box v'+str(box[0])+' v'+str(box[1])+') '
+        init_line += '(at box v'+str(box[0])+'-v'+str(box[1])+') '
         init_line += '\n'
     for wall in board.walls:
-        init_line += '(at wall v'+str(wall[0])+' v'+str(wall[1])+') '
+        init_line += '(at wall v'+str(wall[0])+'-v'+str(wall[1])+') '
         init_line += '\n'
     goal_line = '(:goal (and '
     for goal in board.goals:
-        goal_line += '(at box v'+str(goal[0])+' v'+str(goal[1])+') '
+        goal_line += '(at box v'+str(goal[0])+'-v'+str(goal[1])+') '
         goal_line += '\n'
     lines = ['(define (problem sokobanlevel)'+'\n'+'(:domain sokoban)', objects_line+')', init_line+')', goal_line+')))']
     with open("instance.pddl", 'w') as instance:
@@ -93,18 +106,18 @@ def main(argv):
 
     #domain_file = open('domain.pddl', 'r')
     #instance_file = open('instance.pddl', 'r')
-    #result_file = os.popen('python3 ./downward/fast-downward.py domain.pddl instance.pddl --search "astar(lmcut())"')
-    result_file = os.popen('python3 ./downward/fast-downward.py --alias seq-sat-lama-2011 domain.pddl instance.pddl')
+    result_file = os.popen('python3 ./downward/fast-downward.py --alias seq-sat-lama-2011 --plan-file myplan.txt domain2.pddl instance.pddl')
+    #result_file = os.popen('python3 ./downward/fast-downward.py --overall-time-limit 150 --alias seq-sat-lama-2011 --plan-file myplan.txt domain2.pddl instance.pddl')
+    #result_file = os.popen('python3 ./downward/fast-downward.py --overall-time-limit 60 --alias seq-opt-lmcut --plan-file myplan.txt domain2.pddl instance.pddl')
     result = result_file.readlines()
     actions = []
     for line in result:
-        if ('push' in line) or ('move' in line) or ('teleport' in line): 
-            print(line)
-            actions.append(line)
+        #print(line)
+        actions.append(line)
 
     # TODO - Some of the things that you need to do:
     #  1. (Previously) Have a domain.pddl file somewhere in disk that represents the Sokoban actions and predicates. done
-    #  2. Generate an instance.pddl file from the given board, and save it to disk. done
+    #actions  2. Generate an instance.pddl file from the given board, and save it to disk. done
     #  3. Invoke some classical planner to solve the generated instance.
     #  4. Check the output and print the plan into the screen in some readable form.
     
