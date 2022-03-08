@@ -11,10 +11,10 @@ def find_files(filename):
 
 def translate():
     plans = find_files("myplan.txt")
-    if len(plans) ==0:
+    if len(plans) == 0:
         message = "NO SOLUTION FOUND IN 1 minute"
         print(message)
-        return message
+        return "no solution"
     plans = [plans[0]]
     for plan_file in plans:
         plan = open(plan_file, 'r')
@@ -63,3 +63,4 @@ def translate():
                 list = action.split()
                 print('The total cost of the plan is: '+list[3]+' unit cost')
                 print('------ BEST PLAN END ------\n')
+    return "SOLUTION found"+" cost: "+str(list[3])

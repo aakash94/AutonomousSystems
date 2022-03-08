@@ -111,7 +111,9 @@ def main(argv):
     actions = []
     for line in result:
         actions.append(line)
-    translate()
+    solution = translate()
+    return solution
+
 
     # TODO - Some of the things that you need to do:
     #  1. (Previously) Have a domain.pddl file somewhere in disk that represents the Sokoban actions and predicates. done
@@ -121,4 +123,13 @@ def main(argv):
 
 
 if __name__ == "__main__":
-    main(sys.argv[1:])
+    current_level = 1
+    if sys.argv[1:][1] == 'all':
+        solution_dict = dict()
+        while current_level <=50:
+            solution = main(['-i', 'benchmarks/sasquatch/level'+str(current_level)+'.sok'])
+            solution_dict[current_level] = solution
+            current_level += 1
+        print(solution_dict)
+    else:
+        main(sys.argv[1:])
